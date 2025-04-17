@@ -4,9 +4,9 @@ A powerful command-line tool for translating audio files from English to other l
 
 ## Features
 
-- 🎙️ High-quality speech-to-text using OpenAI's Whisper model
-- 🌐 Accurate translation using Google Translate
-- 🔊 Natural-sounding text-to-speech in multiple languages
+- 🎙️ High-quality speech-to-text using OpenAI's Whisper model (free, no API key required)
+- 🌐 Accurate translation using Google Translate (free, no API key required)
+- 🔊 Natural-sounding text-to-speech in multiple languages (free, no API key required)
 - 📝 Handles large audio files with intelligent chunking
 - 🔄 Preserves audio quality throughout the translation process
 - 📊 Detailed logging for monitoring progress
@@ -16,6 +16,14 @@ A powerful command-line tool for translating audio files from English to other l
 
 - Python 3.8 or higher
 - FFmpeg (required for audio processing)
+- Internet connection (required for translation and text-to-speech services)
+
+## Dependencies
+
+The tool uses the following free services:
+- **Whisper**: OpenAI's open-source speech recognition model (no API key needed)
+- **Google Translate**: Free translation service (no API key needed)
+- **Google Text-to-Speech**: Free text-to-speech service (no API key needed)
 
 ## Installation
 
@@ -92,9 +100,9 @@ The tool supports all languages available in Google Translate. Some common langu
 
 ## How It Works
 
-1. **Transcription**: Uses OpenAI's Whisper model to convert speech to text
-2. **Translation**: Translates the text using Google Translate
-3. **Speech Synthesis**: Converts the translated text back to speech using Google Text-to-Speech
+1. **Transcription**: Uses OpenAI's Whisper model (free, open-source) to convert speech to text
+2. **Translation**: Translates the text using Google Translate's free service
+3. **Speech Synthesis**: Converts the translated text back to speech using Google Text-to-Speech's free service
 
 ## Error Handling
 
@@ -102,6 +110,13 @@ The tool supports all languages available in Google Translate. Some common langu
 - Failed translations are logged but don't stop the process
 - Temporary files are automatically cleaned up
 - Progress is logged at each step
+
+## Limitations
+
+- Requires an internet connection for translation and text-to-speech services
+- Translation quality depends on Google Translate's capabilities
+- Text-to-speech quality depends on Google's TTS service
+- Processing time depends on audio file length and internet connection speed
 
 ## License
 
