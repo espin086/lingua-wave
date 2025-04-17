@@ -6,6 +6,7 @@ from gtts import gTTS
 import logging
 import sys
 import time
+import argparse
 
 # Set up logging
 logging.basicConfig(
@@ -120,16 +121,58 @@ def text_to_speech(text: str, output_path: str, language: str = 'es'):
         raise
 
 def main():
+    # Set up argument parser
+    parser = argparse.ArgumentParser(
+        description='Translate audio files from English to Spanish',
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter
+    )
+    
+    parser.add_argument(
+        'input_file',
+        type=str,
+        help='Path to the input audio file'
+    )
+    
+    parser.add_argument(
+        '-o', '--output',
+        type=str,
+        default='translated_audio.mp3',
+        help='Path to save the output audio file'
+    )
+    
+    parser.add_argument(
+        '-l', '--language',
+        type=str,
+        default='es',
+        help='Target language code (default: es for Spanish)'
+    )
+    
+    parser.add_argument(
+        '-v', '--verbose',
+        action='store_true',
+        help='Enable verbose logging'
+    )
+    
+    # Parse arguments
+    args = parser.parse_args()
+    
+    # Set logging level
+    if args.verbose:
+        logging.getLogger().setLevel(logging.DEBUG)
+    
     try:
         # Get the current directory
         current_dir = Path.cwd()
         
-        # Input and output file paths
-        input_file = "Sofía Cervantes_ Celebrating Her 40th Birthday.wav"
-        output_file = "translated_audio.mp3"
+        # Convert input file to absolute path
+        input_path = Path(args.input_file)
+        if not input_path.is_absolute():
+            input_path = current_dir / input_path
         
-        input_path = current_dir / input_file
-        output_path = current_dir / output_file
+        # Convert output file to absolute path
+        output_path = Path(args.output)
+        if not output_path.is_absolute():
+            output_path = current_dir / output_path
         
         # Verify input file exists
         if not input_path.exists():
@@ -142,11 +185,11 @@ def main():
         logger.info("Transcription completed successfully")
         
         # Step 2: Translate text
-        translated_text = translate_text(transcribed_text)
+        translated_text = translate_text(transcribed_text, args.language)
         logger.info("Translation completed successfully")
         
         # Step 3: Convert to speech
-        text_to_speech(translated_text, str(output_path))
+        text_to_speech(translated_text, str(output_path), args.language)
         logger.info("Text-to-speech conversion completed successfully")
         
         logger.info(f"Process completed. Output saved to: {output_path}")
