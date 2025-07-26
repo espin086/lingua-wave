@@ -1,0 +1,20 @@
+version: '3.8'
+
+services:
+  lingua-wave-api:
+    build: .
+    ports:
+      - "8001:8000"
+    environment:
+      - PYTHONPATH=/app
+      - TEMP_DIR=/tmp/lingua-wave
+    volumes:
+      # Optional: Mount a volume for persistent temporary files
+      - ./temp:/tmp/lingua-wave
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s 
