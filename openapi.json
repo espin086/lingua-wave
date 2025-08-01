@@ -1,0 +1,243 @@
+{
+    "openapi": "3.1.0",
+    "info": {
+        "title": "LinguaWave API",
+        "description": "A powerful API for translating audio files using AI models",
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/health": {
+            "get": {
+                "summary": "Health Check",
+                "description": "Health check endpoint",
+                "operationId": "health_check_health_get",
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HealthResponse"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/translate-audio": {
+            "post": {
+                "summary": "Translate Audio Endpoint",
+                "description": "Translate audio file to target language.\n\nReturns the transcribed and translated text.",
+                "operationId": "translate_audio_endpoint_translate_audio_post",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_translate_audio_endpoint_translate_audio_post"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/TranslationResponse"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/translate-and-synthesize": {
+            "post": {
+                "summary": "Translate And Synthesize Endpoint",
+                "description": "Translate audio file and return translated audio.\n\nReturns the translated audio file.",
+                "operationId": "translate_and_synthesize_endpoint_translate_and_synthesize_post",
+                "requestBody": {
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "$ref": "#/components/schemas/Body_translate_and_synthesize_endpoint_translate_and_synthesize_post"
+                            }
+                        }
+                    },
+                    "required": true
+                },
+                "responses": {
+                    "200": {
+                        "description": "Successful Response",
+                        "content": {
+                            "application/json": {
+                                "schema": {}
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation Error",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/HTTPValidationError"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Body_translate_and_synthesize_endpoint_translate_and_synthesize_post": {
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "title": "File",
+                        "description": "Audio file to translate"
+                    },
+                    "target_language": {
+                        "type": "string",
+                        "title": "Target Language",
+                        "description": "Target language code",
+                        "default": "es"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "file"
+                ],
+                "title": "Body_translate_and_synthesize_endpoint_translate_and_synthesize_post"
+            },
+            "Body_translate_audio_endpoint_translate_audio_post": {
+                "properties": {
+                    "file": {
+                        "type": "string",
+                        "format": "binary",
+                        "title": "File",
+                        "description": "Audio file to translate"
+                    },
+                    "target_language": {
+                        "type": "string",
+                        "title": "Target Language",
+                        "description": "Target language code",
+                        "default": "es"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "file"
+                ],
+                "title": "Body_translate_audio_endpoint_translate_audio_post"
+            },
+            "HTTPValidationError": {
+                "properties": {
+                    "detail": {
+                        "items": {
+                            "$ref": "#/components/schemas/ValidationError"
+                        },
+                        "type": "array",
+                        "title": "Detail"
+                    }
+                },
+                "type": "object",
+                "title": "HTTPValidationError"
+            },
+            "HealthResponse": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "title": "Status"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "status",
+                    "message"
+                ],
+                "title": "HealthResponse"
+            },
+            "TranslationResponse": {
+                "properties": {
+                    "original_text": {
+                        "type": "string",
+                        "title": "Original Text"
+                    },
+                    "translated_text": {
+                        "type": "string",
+                        "title": "Translated Text"
+                    },
+                    "target_language": {
+                        "type": "string",
+                        "title": "Target Language"
+                    },
+                    "message": {
+                        "type": "string",
+                        "title": "Message"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "original_text",
+                    "translated_text",
+                    "target_language",
+                    "message"
+                ],
+                "title": "TranslationResponse"
+            },
+            "ValidationError": {
+                "properties": {
+                    "loc": {
+                        "items": {
+                            "anyOf": [
+                                {
+                                    "type": "string"
+                                },
+                                {
+                                    "type": "integer"
+                                }
+                            ]
+                        },
+                        "type": "array",
+                        "title": "Location"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "title": "Message"
+                    },
+                    "type": {
+                        "type": "string",
+                        "title": "Error Type"
+                    }
+                },
+                "type": "object",
+                "required": [
+                    "loc",
+                    "msg",
+                    "type"
+                ],
+                "title": "ValidationError"
+            }
+        }
+    }
+}
