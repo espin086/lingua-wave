@@ -43,11 +43,11 @@ class HealthResponse(BaseModel):
 
 @app.on_event("startup")
 async def startup_event():
-    """Load Whisper model on startup"""
+    """Initialize application - skip model loading to avoid network issues during startup"""
     global whisper_model
-    logger.info("Loading Whisper model...")
-    whisper_model = whisper.load_model("base")
-    logger.info("Whisper model loaded successfully")
+    logger.info("Application starting up...")
+    logger.info("Whisper model will be loaded on first request to avoid startup network issues")
+    whisper_model = None
 
 @app.get("/health", response_model=HealthResponse)
 async def health_check():
@@ -165,7 +165,30 @@ async def transcribe_audio_async(audio_path: str) -> str:
     Transcribe audio file to text using Whisper model (async wrapper).
     """
     def _transcribe():
+        global whisper_model
         try:
+            # Load model if not already loaded
+            if whisper_model is None:
+                logger.info("Loading Whisper model (not loaded during startup)...")
+                try:
+                    # Try to load the smallest model first
+                    whisper_model = whisper.load_model("tiny")
+                    logger.info("Whisper tiny model loaded successfully")
+                except Exception as e:
+                    logger.error(f"Failed to load Whisper model: {str(e)}")
+                    # If download fails, try to use cached model if available
+                    try:
+                        import os
+                        cache_dir = os.path.expanduser("~/.cache/whisper")
+                        if os.path.exists(cache_dir):
+                            logger.info("Trying to load from cache...")
+                            whisper_model = whisper.load_model("tiny", download_root=cache_dir)
+                        else:
+                            raise Exception("No cached model available and download failed")
+                    except Exception as cache_error:
+                        logger.error(f"Cache loading also failed: {str(cache_error)}")
+                        raise Exception("Unable to load Whisper model - network connectivity issues")
+            
             logger.info("Transcribing audio...")
             result = whisper_model.transcribe(audio_path)
             return result["text"]

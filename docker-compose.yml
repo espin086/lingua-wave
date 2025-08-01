@@ -4,7 +4,7 @@ services:
   lingua-wave-api:
     build: .
     ports:
-      - "8001:8000"
+      - "8003:8000"
     environment:
       - PYTHONPATH=/app
       - TEMP_DIR=/tmp/lingua-wave

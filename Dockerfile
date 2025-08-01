@@ -17,6 +17,9 @@ COPY requirements.txt .
 # Install Python dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
+# Pre-download Whisper model to avoid runtime network issues
+RUN python3 -c "import whisper; whisper.load_model('tiny')" || echo "Whisper model download failed, will try at runtime"
+
 # Copy application code
 COPY main.py .
 COPY audio_translator.py .
